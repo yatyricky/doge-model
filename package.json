@@ -1,0 +1,10 @@
+{
+  "name": "doge-model",
+  "version": "1.0.0",
+  "description": "CLI tool to switch doge models",
+  "main": "index.ts",
+  "bin": {
+    "doge-model": "./index.ts"
+  },
+  "dependencies": {}
+}

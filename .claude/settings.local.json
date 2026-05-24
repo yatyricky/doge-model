@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bun install:*)",
+      "Bash(bun link:*)",
+      "Bash(bun run:*)",
+      "Bash(mkdir -p ~/.doge)",
+      "Bash(~/.doge/settings.json.test)",
+      "Bash(~/.doge/settings.json.deepseek)"
+    ]
+  }
+}
