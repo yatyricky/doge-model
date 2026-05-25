@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-import { readdirSync, readFileSync, copyFileSync, existsSync } from "fs";
+import { readdirSync, readFileSync, writeFileSync, existsSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";
 const dogeDir = join(homedir(), ".doge");
@@ -15,10 +15,11 @@ function getModelNames(): string[] {
 
 function getCurrentModel(models: string[]): string | null {
   if (!existsSync(settingsPath)) return null;
-  const current = readFileSync(settingsPath, "utf-8");
+  const settings = JSON.parse(readFileSync(settingsPath, "utf-8"));
+  const currentEnv = JSON.stringify(settings?.env ?? null);
   for (const name of models) {
-    const candidate = readFileSync(join(dogeDir, `settings.json.${name}`), "utf-8");
-    if (current === candidate) return name;
+    const candidate = JSON.parse(readFileSync(join(dogeDir, `settings.json.${name}`), "utf-8"));
+    if (currentEnv === JSON.stringify(candidate?.env ?? null)) return name;
   }
   return null;
 }
@@ -39,7 +40,10 @@ function switchModel(name: string) {
     console.error(`${c.yellow}Error:${c.reset} Model "${name}" not found: ${src}`);
     process.exit(1);
   }
-  copyFileSync(src, settingsPath);
+  const settings = existsSync(settingsPath) ? JSON.parse(readFileSync(settingsPath, "utf-8")) : {};
+  const model = JSON.parse(readFileSync(src, "utf-8"));
+  settings.env = model.env;
+  writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + "\n");
   console.log(`\n${c.green}${c.bold}Switched to ${c.cyan}${name}${c.reset}`);
   console.log(`${c.gray}Config: ${settingsPath}${c.reset}\n`);
 }
